@@ -3,30 +3,30 @@ const helperService = require('../../services/helperService');
 const responseService = require('../../services/responseService');
 
 async function getAll(_ctx) {
-  try {
-    let query = "SELECT * FROM adm_usuarios where id > 0";
-    const result = await MysqlService.poolQuery(query, []);
-    if(result.length > 0) {
-      _ctx.body = responseService.getStandardResponse(0, "OK", result);
-    } else {
-      _ctx.body = responseService.getStandardResponseError(1, result.sqlMessage);
+    try {
+      let query = "SELECT * FROM cm_pacientes where id > 0";
+      const result = await MysqlService.poolQuery(query, []);
+      if(result.length > 0) {
+        _ctx.body = responseService.getStandardResponse(0, "OK", result);
+      } else {
+        _ctx.body = responseService.getStandardResponseError(1, "No hay pacientes registrados");
+      }
+    } catch (error) {
+      _ctx.body = responseService.getStandardResponseError(2, error.message);
     }
-  } catch (error) {
-    _ctx.body = responseService.getStandardResponseError(2, error.message);
-  }
 }
 
 async function getById(_ctx) {
   const { params } = _ctx;
   try {
-    let query = "SELECT * FROM adm_usuarios where id > 0 and id = ?";
+    let query = "SELECT * FROM cm_pacientes where id > 0 and id = ?";
     const result = await MysqlService.poolQuery(query, [params.id]);
     if(result.length > 0) {
       _ctx.body = responseService.getStandardResponse(0, "OK", result);
     } else {
-      _ctx.body = responseService.getStandardResponseError(1, result.sqlMessage);
+      _ctx.body = responseService.getStandardResponseError(1, "Paciente no registrado");
     }
-  } catch (error) {
+} catch (error) {
     _ctx.body = responseService.getStandardResponseError(2, error.message);
   }
 }
@@ -34,11 +34,12 @@ async function getById(_ctx) {
 async function create(_ctx) {
   const { params } = _ctx;
   try {
-    let query = "SELECT id from adm_usuarios where rut = ?";
+    params.fecha_registro = helperService.dateNow();
+
+    let query = "SELECT id from cm_pacientes where rut = ?";
     const result = await MysqlService.poolQuery(query, [params.rut]);
     if(result.length == 0) {
-      params.password = await helperService.hashPassword(params.rut);
-      const insertData = helperService.insertData('adm_usuarios', params);
+      const insertData = helperService.insertData('cm_pacientes', params);
       const result = await MysqlService.poolQuery(insertData[0], insertData[1]);
       if(result.insertId > 0)
         _ctx.body = responseService.getStandardResponse(0, "Registro creado", null);
@@ -55,7 +56,9 @@ async function create(_ctx) {
 async function updateById(_ctx) {
   const { params } = _ctx;
   try {
-    const updData = helperService.updateData("adm_usuarios", params);
+    params.fecha_modificacion = helperService.dateNow();
+
+    const updData = helperService.updateData("cm_pacientes", params);
     const result = await MysqlService.poolQuery(updData[0], updData[1]);
     if(result.affectedRows > 0)
       _ctx.body = responseService.getStandardResponse(0, "Registro actualizado", null);
@@ -69,7 +72,7 @@ async function updateById(_ctx) {
 async function deleteById(_ctx) {
   const { params } = _ctx;
   try {
-    const dltData = helperService.deleteData("adm_usuarios", params);
+    const dltData = helperService.deleteData("cm_pacientes", params);
     const result = await MysqlService.poolQuery(dltData[0], dltData[1]);
     if(result.affectedRows > 0)
       _ctx.body = responseService.getStandardResponse(0, "Registro eliminado", null);
@@ -80,25 +83,10 @@ async function deleteById(_ctx) {
   }
 }
 
-
-async function getUserRelacion(_ctx) {
-  const { params } = _ctx;
-  try {
-      let query = "SELECT * FROM adm_usuarios_relacion where id_usuario = ? and id_sistema = ?";
-      _ctx.body = await MysqlService.poolQuery(_ctx, query, [params.id_usuario, params.id_sistema]);
-  } catch (error) {
-      _ctx.body = {
-          codResp: 1,
-          glosaResp: error.message,
-      };
-  }
-}
-
 module.exports = {
-    getAll,
-    getById,
-    create,
-    updateById,
-    deleteById,
-    getUserRelacion
-};
+  getAll,
+  getById,
+  create,
+  updateById,
+  deleteById
+}

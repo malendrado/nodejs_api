@@ -1,6 +1,7 @@
 const MysqlService = require('../../services/mysqlService');
 const authentication = require('../../config/authentication');
 const helperService = require('../../services/helperService');
+const responseService = require('../../services/responseService');
 
 async function loginRut(_ctx) {
     const { params } = _ctx;
@@ -14,16 +15,16 @@ async function loginRut(_ctx) {
           if(equal){
             delete result[0].password;
             const token = authentication.sign(params);
-            _ctx.body = helperService.getStandardResponseLogin(0, "OK", result, token);
+            _ctx.body = responseService.getStandardResponseLogin(0, "OK", result, token);
           }
           else{
-            _ctx.body = helperService.getStandardResponseError(1, "Email o password incorrectos");
+            _ctx.body = responseService.getStandardResponseError(1, "Email o password incorrectos");
           }
         } else {
-          _ctx.body = helperService.getStandardResponseError(1, result.sqlMessage);
+          _ctx.body = responseService.getStandardResponseError(1, result.sqlMessage);
         }
     } catch (error) {
-      _ctx.body = helperService.getStandardResponseError(1, error.message);
+      _ctx.body = responseService.getStandardResponseError(1, error.message);
     }
 }
 
@@ -39,13 +40,13 @@ async function loginEmail(_ctx) {
         if(equal){
           delete result[0].password;
           const token = authentication.sign(params)
-          _ctx.body = helperService.getStandardResponseLogin(0, "OK", result, token);
+          _ctx.body = responseService.getStandardResponseLogin(0, "OK", result, token);
         }
         else{
-          _ctx.body = helperService.getStandardResponseError(1, "Email o password incorrectos");
+          _ctx.body = responseService.getStandardResponseError(1, "Email o password incorrectos");
         }
       } else {
-        _ctx.body = helperService.getStandardResponseError(1, result.sqlMessage);
+        _ctx.body = responseService.getStandardResponseError(1, result.sqlMessage);
       }
     } catch (error) {
       _ctx.body = {
@@ -62,11 +63,11 @@ async function loginUpdatePassword(_ctx) {
     const updData = helperService.updateData("adm_usuarios", params);
     const result = await MysqlService.poolQuery(updData[0], updData[1]);
     if(result.affectedRows > 0)
-      _ctx.body = helperService.getStandardResponse(0, "Contraseña actualizada", null);
+      _ctx.body = responseService.getStandardResponse(0, "Contraseña actualizada", null);
     else
-      _ctx.body = helperService.getStandardResponse(1, "Contraseña no actualizado", null);
+      _ctx.body = responseService.getStandardResponse(1, "Contraseña no actualizado", null);
   } catch (error) {
-    _ctx.body = helperService.getStandardResponseError(2, error.message);
+    _ctx.body = responseService.getStandardResponseError(2, error.message);
   }
 }
 

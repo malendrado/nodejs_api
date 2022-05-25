@@ -1,5 +1,7 @@
 const validatePatt = require('../config/validatePattern');
 const bcrypt = require('bcrypt');
+const responseService = require('./responseService');
+const moment = require('moment');
 
 function selectData(table, data) {
     let DATOS = "";
@@ -57,7 +59,7 @@ function validateDataRequired(dataRequired, paramsIn){
     if(dataRequired){
         dataRequired.forEach(element => {
             if(!paramsIn[element]){
-                getStandardResponseThrow(400, 'BadRequest', null);
+                responseService.getStandardResponseThrow(400, 'BadRequest', null);
             }
         });    
     }
@@ -69,42 +71,14 @@ function validatePattern(paramsIn) {
         if(validatePatt[e]) {
             let valid = paramsIn[e].match(validatePatt[e].pattern);
             if(!valid) {
-                getStandardResponseThrow(400, 'BadRequest', `${e}: ${validatePatt[e].message}`);
-            }    
+                responseService.getStandardResponseThrow(400, 'BadRequest', `${validatePatt[e].message}`);
+            }
+            if(e == "rut") {
+                if(!validateRut.validaRut(paramsIn[e]))
+                    responseService.getStandardResponseThrow(400, 'BadRequest', `Rut ingresado incorrecto`);
+            }
         }
     }
-}
-
-function getStandardResponseThrow(status, code, msg) {
-    throw { status: status, message: {
-            code: code,
-            msg: msg
-        }
-    };
-}
-
-function getStandardResponse(codResp, glosaResp, data){
-    return {
-        codResp: codResp,
-        glosaResp : glosaResp,
-        data : data,
-     }
-}
-
-function getStandardResponseLogin(codResp, glosaResp, data, token){
-    return {
-        codResp: codResp,
-        glosaResp : glosaResp,
-        data : data,
-        token: token
-     }
-}
-
-function getStandardResponseError(codResp, glosaResp){
-    return {
-        codResp: codResp,
-        glosaResp : glosaResp
-     }
 }
 
 var hashPassword = async function(password){
@@ -116,6 +90,29 @@ var comparePassword = async function(passReq, hashBD){
     return await bcrypt.compare(passReq, hashBD);
 }
 
+var validateRut = {
+	// Valida el rut con su cadena completa "XXXXXXXX-X"
+	validaRut : function (rutCompleto) {
+		if (!/^[0-9]+[-|‐]{1}[0-9kK]{1}$/.test( rutCompleto ))
+			return false;
+		var tmp 	= rutCompleto.split('-');
+		var digv	= tmp[1]; 
+		var rut 	= tmp[0];
+		if ( digv == 'K' ) digv = 'k' ;
+		return (validateRut.dv(rut) == digv );
+	},
+	dv : function(T){
+		var M=0,S=1;
+		for(;T;T=Math.floor(T/10))
+			S=(S+T%10*(9-M++%6))%11;
+		return S?S-1:'k';
+	}
+}
+
+var dateNow = function() {
+    return `${moment().format("YYYY-MM-DD H:mm:ss")}`;
+}
+
 module.exports = {
     selectData,
     insertData,
@@ -123,9 +120,7 @@ module.exports = {
     deleteData,
     validateDataRequired,
     validatePattern,
-    getStandardResponse,
-    getStandardResponseLogin,
-    getStandardResponseError,
     hashPassword,
-    comparePassword
+    comparePassword,
+    dateNow
 }

@@ -24,5 +24,9 @@ module.exports = {
     correo: {
         pattern: '[a-zA-Z0-9._%+-]{1,40}[@]{1}[a-zA-Z0-9._%+-]{1,40}[.]{1}[a-zA-Z]{2,3}',
         message: 'Debe ser un correo valido, EJ: correo@dominio.cl'
+    },
+    fecha_nacimiento: {
+        pattern: '^[0-9]{4}-[0-9]{2}-[0-9]{2}',
+        message: 'Fecha de nacimiento incorrecta XXXX-XX-XX'
     }
 }

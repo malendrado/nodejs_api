@@ -88,5 +88,58 @@ module.exports = {
 		controller: 'mysqlController/medicoController',
 		action: 'deleteById',
         auth: true
+	},
+	'GET /pacientes/':{
+		controller: 'mysqlController/pacienteController',
+		action: 'getAll',
+        auth: false
+	},
+	'GET /pacientes/:id':{
+		controller: 'mysqlController/pacienteController',
+		action: 'getById',
+        auth: true
+	},
+    'POST /pacientes/create/':{
+		controller: 'mysqlController/pacienteController',
+		action: 'create',
+        auth: true,
+		dataRequired: ['rut', 'nombres', 'apellidos', 'direccion', 'genero', 'fecha_nacimiento']
+	},
+    'PUT /pacientes/updateById/:id':{
+		controller: 'mysqlController/pacienteController',
+		action: 'updateById',
+        auth: true
+	},
+    'DELETE /pacientes/deleteById/:id':{
+		controller: 'mysqlController/pacienteController',
+		action: 'deleteById',
+        auth: true
+	},
+	'GET /horarios/':{
+		controller: 'mysqlController/horarioController',
+		action: 'getAll',
+        auth: false
+	},
+	'GET /horarios/:id':{
+		controller: 'mysqlController/horarioController',
+		action: 'getById',
+        auth: true
+	},
+    'POST /horarios/create/':{
+		controller: 'mysqlController/horarioController',
+		action: 'create',
+        auth: true,
+		dataRequired: ['id_medico', 'fecha_atencion', 'hora_inicio', 'hora_termino']
+	},
+    'PUT /horarios/updateById/:id':{
+		controller: 'mysqlController/horarioController',
+		action: 'updateById',
+        auth: true,
+		dataRequired: ['id_medico', 'fecha_atencion', 'hora_inicio', 'hora_termino']
+	},
+    'DELETE /horarios/deleteById/:id':{
+		controller: 'mysqlController/horarioController',
+		action: 'deleteById',
+        auth: true
 	}
 }
