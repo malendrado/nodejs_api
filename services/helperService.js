@@ -68,7 +68,7 @@ function validateDataRequired(dataRequired, paramsIn){
 
 function validatePattern(paramsIn) {
     for(var e in paramsIn) {
-        if(validatePatt[e]) {
+        if(validatePatt[e] && paramsIn[e] != "" && paramsIn[e] != null) {
             let valid = paramsIn[e].match(validatePatt[e].pattern);
             if(!valid) {
                 responseService.getStandardResponseThrow(400, 'BadRequest', `${validatePatt[e].message}`);

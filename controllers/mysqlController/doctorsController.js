@@ -34,6 +34,7 @@ async function getById(_ctx) {
 async function create(_ctx) {
   const { params } = _ctx;
   try {
+    params.fecha_registro = helperService.dateNow();
     let query = "SELECT id from cm_medicos where rut = ?";
     const result = await MysqlService.poolQuery(query, [params.rut]);
     if(result.length == 0) {
@@ -54,6 +55,7 @@ async function create(_ctx) {
 async function updateById(_ctx) {
   const { params } = _ctx;
   try {
+    params.fecha_modificacion = helperService.dateNow();
     const updData = helperService.updateData("cm_medicos", params);
     const result = await MysqlService.poolQuery(updData[0], updData[1]);
     if(result.affectedRows > 0)

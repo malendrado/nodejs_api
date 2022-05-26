@@ -62,84 +62,179 @@ module.exports = {
 		action: 'getUserRelacion',
         auth: false
 	},
-	'GET /medicos/':{
-		controller: 'mysqlController/medicoController',
+	'GET /doctors/':{
+		controller: 'mysqlController/doctorsController',
 		action: 'getAll',
         auth: false
 	},
-	'GET /medicos/:id':{
-		controller: 'mysqlController/medicoController',
+	'GET /doctors/:id':{
+		controller: 'mysqlController/doctorsController',
 		action: 'getId',
         auth: true
 	},
-    'POST /medicos/create/':{
-		controller: 'mysqlController/medicoController',
+	'GET /doctors/getRelationSpecialities/:id_medico':{
+		controller: 'mysqlController/doctorsController',
+		action: 'getRelationSpecialities',
+        auth: false,		
+	},
+    'POST /doctors/create/':{
+		controller: 'mysqlController/doctorsController',
 		action: 'create',
         auth: false,
 		dataRequired: ['rut', 'nombres', 'apellidos']
 	},
-    'PUT /medicos/updateById/:id':{
-		controller: 'mysqlController/medicoController',
+    'PUT /doctors/updateById/:id':{
+		controller: 'mysqlController/doctorsController',
 		action: 'updateById',
         auth: true,
 		dataRequired: ['id']
 	},
-    'DELETE /medicos/deleteById/:id':{
-		controller: 'mysqlController/medicoController',
+    'DELETE /doctors/deleteById/:id':{
+		controller: 'mysqlController/doctorsController',
 		action: 'deleteById',
         auth: true
 	},
-	'GET /pacientes/':{
-		controller: 'mysqlController/pacienteController',
+	'GET /patients/':{
+		controller: 'mysqlController/patientsController',
 		action: 'getAll',
         auth: false
 	},
-	'GET /pacientes/:id':{
-		controller: 'mysqlController/pacienteController',
+	'GET /patients/:id':{
+		controller: 'mysqlController/patientsController',
 		action: 'getById',
         auth: true
 	},
-    'POST /pacientes/create/':{
-		controller: 'mysqlController/pacienteController',
+    'POST /patients/create/':{
+		controller: 'mysqlController/patientsController',
 		action: 'create',
         auth: true,
 		dataRequired: ['rut', 'nombres', 'apellidos', 'direccion', 'genero', 'fecha_nacimiento']
 	},
-    'PUT /pacientes/updateById/:id':{
-		controller: 'mysqlController/pacienteController',
+    'PUT /patients/updateById/:id':{
+		controller: 'mysqlController/patientsController',
 		action: 'updateById',
         auth: true
 	},
-    'DELETE /pacientes/deleteById/:id':{
-		controller: 'mysqlController/pacienteController',
+    'DELETE /patients/deleteById/:id':{
+		controller: 'mysqlController/patientsController',
 		action: 'deleteById',
         auth: true
 	},
-	'GET /horarios/':{
-		controller: 'mysqlController/horarioController',
+	'GET /schedules/':{
+		controller: 'mysqlController/scheludesController',
 		action: 'getAll',
         auth: false
 	},
-	'GET /horarios/:id':{
-		controller: 'mysqlController/horarioController',
+	'GET /schedules/:id':{
+		controller: 'mysqlController/scheludesController',
 		action: 'getById',
         auth: true
 	},
-    'POST /horarios/create/':{
-		controller: 'mysqlController/horarioController',
+    'POST /schedules/create/':{
+		controller: 'mysqlController/scheludesController',
 		action: 'create',
         auth: true,
 		dataRequired: ['id_medico', 'fecha_atencion', 'hora_inicio', 'hora_termino']
 	},
-    'PUT /horarios/updateById/:id':{
-		controller: 'mysqlController/horarioController',
+    'PUT /schedules/updateById/:id':{
+		controller: 'mysqlController/scheludesController',
 		action: 'updateById',
         auth: true,
 		dataRequired: ['id_medico', 'fecha_atencion', 'hora_inicio', 'hora_termino']
 	},
-    'DELETE /horarios/deleteById/:id':{
-		controller: 'mysqlController/horarioController',
+    'DELETE /schedules/deleteById/:id':{
+		controller: 'mysqlController/scheludesController',
 		action: 'deleteById',
+        auth: true
+	},
+	'GET /specialities/':{
+		controller: 'mysqlController/specialitiesController',
+		action: 'getAll',
+        auth: false
+	},
+	'GET /specialities/:id':{
+		controller: 'mysqlController/specialitiesController',
+		action: 'getById',
+        auth: true
+	},
+	'POST /specialities/getByName/':{
+		controller: 'mysqlController/specialitiesController',
+		action: 'getByName',
+        auth: true,
+		dataRequired: ['nombre']
+	},
+    'POST /specialities/create/':{
+		controller: 'mysqlController/specialitiesController',
+		action: 'create',
+        auth: true,
+		dataRequired: ['nombre', 'descripcion']
+	},
+    'PUT /specialities/updateById/:id':{
+		controller: 'mysqlController/specialitiesController',
+		action: 'updateById',
+        auth: true,
+		dataRequired: ['nombre', 'descripcion']
+	},
+    'DELETE /specialities/deleteById/:id':{
+		controller: 'mysqlController/specialitiesController',
+		action: 'deleteById',
+        auth: true
+	},
+	'GET /relationDocSpe/':{
+		controller: 'mysqlController/relationDocSpeController',
+		action: 'getAll',
+        auth: false,		
+	},
+	'GET /relationDocSpe/getByIdDoctor/:id_medico':{
+		controller: 'mysqlController/relationDocSpeController',
+		action: 'getByIdDoctor',
+        auth: false,		
+	},
+	'GET /relationDocSpe/getByIdSpecialty/:id_especialidad':{
+		controller: 'mysqlController/relationDocSpeController',
+		action: 'getByIdSpecialty',
+        auth: false,		
+	},
+	'POST /relationDocSpe/create':{
+		controller: 'mysqlController/relationDocSpeController',
+		action: 'create',
+        auth: true,
+		dataRequired: ['id_medico', 'id_especialidad']
+	},
+    'DELETE /relationDocSpe/deleteById/:id_medico/:id_especialidad':{
+		controller: 'mysqlController/relationDocSpeController',
+		action: 'deleteById',
+        auth: true
+	},
+	'GET /appointment/':{
+		controller: 'mysqlController/appointmentController',
+		action: 'getAll',
+        auth: false,		
+	},
+	'GET /appointment/:fecha_atencion':{
+		controller: 'mysqlController/appointmentController',
+		action: 'getByDate',
+        auth: false,		
+	},
+	'GET /appointment/getByIdDoctor/:id_medico':{
+		controller: 'mysqlController/appointmentController',
+		action: 'getByIdDoctor',
+        auth: false,		
+	},
+	'GET /appointment/getByIdPatient/:id_paciente':{
+		controller: 'mysqlController/appointmentController',
+		action: 'getByIdPatient',
+        auth: false,		
+	},
+    'POST /appointment/create/':{
+		controller: 'mysqlController/appointmentController',
+		action: 'create',
+        auth: true,
+		dataRequired: ['id_medico', 'id_paciente', 'fecha_atencion', 'inicio']
+	},
+    'PUT /appointment/updateById/:id':{
+		controller: 'mysqlController/appointmentController',
+		action: 'updateById',
         auth: true
 	}
 }

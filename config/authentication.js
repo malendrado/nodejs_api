@@ -17,7 +17,7 @@ function validateToken(ctx){
 
 function sign(payload){
     const token = jwt.sign(payload, Koa.config.secretKey, {
-        expiresIn: 1440
+        expiresIn: "1d"
     });
     return token;
 }
