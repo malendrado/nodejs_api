@@ -69,7 +69,7 @@ module.exports = {
 	},
 	'GET /doctors/:id':{
 		controller: 'mysqlController/doctorsController',
-		action: 'getId',
+		action: 'getById',
         auth: true
 	},
 	'GET /doctors/getRelationSpecialities/:id_medico':{
@@ -235,6 +235,11 @@ module.exports = {
     'PUT /appointment/updateById/:id':{
 		controller: 'mysqlController/appointmentController',
 		action: 'updateById',
+        auth: true
+	},
+    'DELETE /appointment/deleteById/:id':{
+		controller: 'mysqlController/appointmentController',
+		action: 'deleteById',
         auth: true
 	}
 }

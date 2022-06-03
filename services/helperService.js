@@ -4,19 +4,16 @@ const responseService = require('./responseService');
 const moment = require('moment');
 
 function selectData(table, data) {
-    let DATOS = "";
     let WHERE = "";
     let params = [];
 
     for(var e in data) {
-        DATOS+= `${e},`;
         WHERE+= `${e} = ?,`;
         params.push(data[e]);
     }
 
-    DATOS = DATOS.substring(0, DATOS.length - 1);
     WHERE = WHERE.substring(0, WHERE.length - 1);
-    query = `SELECT ${DATOS} from ${table} where ${WHERE}`;
+    query = `SELECT * from ${table} where ${WHERE}`;
     return [query, params];
 }
 

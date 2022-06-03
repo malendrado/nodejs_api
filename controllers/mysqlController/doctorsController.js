@@ -19,12 +19,12 @@ async function getAll(_ctx) {
 async function getById(_ctx) {
   const { params } = _ctx;
   try {
-    let query = "SELECT * FROM cm_medicos where id > 0 and id = ?";
-    const result = await MysqlService.poolQuery(query, [params.id]);
+    let query = helperService.selectData("cm_medicos", params);
+    const result = await MysqlService.poolQuery(query[0], query[1]);
     if(result.length > 0) {
       _ctx.body = responseService.getStandardResponse(0, "OK", result);
     } else {
-      _ctx.body = responseService.getStandardResponseError(1, result.sqlMessage);
+      _ctx.body = responseService.getStandardResponseError(1, "Doctor no registrado");
     }
 } catch (error) {
     _ctx.body = responseService.getStandardResponseError(2, error.message);

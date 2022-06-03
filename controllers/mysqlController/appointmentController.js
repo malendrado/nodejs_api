@@ -101,7 +101,7 @@ async function create(_ctx) {
       else
         _ctx.body = responseService.getStandardResponse(1, "Registro no creado", null);    
     } else {
-      _ctx.body = responseService.getStandardResponse(1, "Rut ingresado ya existe", result[0]);
+      _ctx.body = responseService.getStandardResponse(1, "Cita ya se encuentra agendada", result[0]);
     }
   } catch (error) {
     _ctx.body = responseService.getStandardResponseError(2, error.message);
