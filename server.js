@@ -6,7 +6,7 @@ const ENV = process.env.NODE_ENV || 'development';
 global.Koa = {};
 global.Koa.config = require('./config/environment/' + ENV);
 
-let routes = require('./config/routes');
+const routes = require('./config/routes');
 const helperService = require('./services/helperService');
 const authentication = require('./config/authentication')
 
@@ -17,29 +17,31 @@ let app = new (require('koa'))();
 let router = new (require('koa-router'))();
 let bodyParser = require('koa-bodyparser')();
 
-_.forEach(routes, (route, key) => {
-	key = key.match(/\S+/g);
-	router[key[0].toLowerCase()](key[1], async ctx => {
-		
-		let valid = true;
-		if (route.auth)
-			valid = authentication.validateToken(ctx);
+_.forEach(routes, (routeInit) => {
+	_.forEach(routeInit, (route, key) => {
+		key = key.match(/\S+/g);
+		router[key[0].toLowerCase()](key[1], async ctx => {
+			
+			let valid = true;
+			if (route.auth)
+				valid = authentication.validateToken(ctx);
 
-		global.Koa.config.mysqlused = ctx.request.header.sys ? global.Koa.config.mysql[sys] : global.Koa.config.mysql.central;
+			global.Koa.config.mysqlused = ctx.request.header.sys ? global.Koa.config.mysql[sys] : global.Koa.config.mysql.central;
 
-		if(valid != true){
-			if (route.auth.redirect) {
-				ctx.redirect(route.auth.redirect);
-			} else {
-				throw {status: 401, message: {code: 'AuthError', msg: 'Access denied'}};
+			if(valid != true){
+				if (route.auth.redirect) {
+					ctx.redirect(route.auth.redirect);
+				} else {
+					throw {status: 401, message: {code: 'AuthError', msg: 'Access denied'}};
+				}
+				return;
 			}
-			return;
-		}
-		helperService.validateDataRequired(route.dataRequired, ctx.params);
-		console.log('./controllers/' + route.controller, route.action);
-		let executable = require('./controllers/' + route.controller)[route.action];
-		await executable(ctx);
-	});
+			helperService.validateDataRequired(route.dataRequired, ctx.params);
+			console.log('./controllers/' + route.controller, route.action);
+			let executable = require('./controllers/' + route.controller)[route.action];
+			await executable(ctx);
+		});
+	})
 });
 
 app.use(bodyParser);
@@ -74,11 +76,11 @@ app.use(async (ctx, next) => {
 	ctx.response.set('Content-Type', 'application/json; charset=utf-8');
 });
 
-app.use(router.routes());
-app.use(router.allowedMethods());
-
-app.listen(PORT, () => {
-	console.log('Server running at');
-	console.log('PORT: ' + PORT);
-	console.log('ENV: ' + ENV);
+app
+	.use(router.routes())
+	.use(router.allowedMethods())
+	.listen(PORT, () => {
+		console.log('Server running at');
+		console.log('PORT: ' + PORT);
+		console.log('ENV: ' + ENV);
 });
